@@ -1,24 +1,20 @@
 <?php
-// Configuración de la conexión a la base de datos
+
 $servername = "db"; // Nombre del servicio de MySQL en el archivo docker-compose.yml
 $username = "usuario"; // Usuario de la base de datos
 $password = "contraseña"; // Contraseña de la base de datos
 $database = "proyectodb"; // Nombre de la base de datos
 
-// Crear conexión
 $conn = new mysqli($servername, $username, $password, $database);
 
-// Verificar la conexión
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Función para mostrar los mensajes de éxito o error
 function showMessage($message, $type = 'success') {
     echo "<div class='alert alert-$type' role='alert'>$message</div>";
 }
 
-// Operación de agregar usuario
 if (isset($_POST['add_user'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -31,7 +27,6 @@ if (isset($_POST['add_user'])) {
     }
 }
 
-// Operación de agregar producto
 if (isset($_POST['add_product'])) {
     $product_name = $_POST['product_name'];
     $price = $_POST['price'];
@@ -44,7 +39,6 @@ if (isset($_POST['add_product'])) {
     }
 }
 
-// Operación de eliminar usuario
 if (isset($_POST['delete_user'])) {
     $user_id = $_POST['user_id'];
 
@@ -56,7 +50,13 @@ if (isset($_POST['delete_user'])) {
     }
 }
 
-// Operación de eliminar producto
+if (isset($_POST['update_user'])) {
+    $user_id = $_POST['user_id'];
+    // Aquí deberías redirigir al usuario a un formulario de modificación de usuario con el ID correspondiente
+    header("Location: user.php?id=$user_id");
+    exit();
+}
+
 if (isset($_POST['delete_product'])) {
     $product_id = $_POST['product_id'];
 
@@ -68,11 +68,17 @@ if (isset($_POST['delete_product'])) {
     }
 }
 
-// Obtener usuarios
+if (isset($_POST['update_product'])) {
+    $product_id = $_POST['product_id'];
+
+    // Aquí deberías redirigir al usuario a un formulario de modificación de producto con el ID correspondiente
+    header("Location: product.php?id=$product_id");
+    exit();
+}
+
 $sql_users = "SELECT * FROM users";
 $result_users = $conn->query($sql_users);
 
-// Obtener productos
 $sql_products = "SELECT * FROM products";
 $result_products = $conn->query($sql_products);
 ?>
@@ -88,8 +94,7 @@ $result_products = $conn->query($sql_products);
 <body>
     <div class="container">
         <h1>Tienda - CRUD</h1>
-
-        <!-- Agregar Usuario -->
+        
         <h2>Agregar Usuario</h2>
         <form method="post" action="">
             <div class="form-group">
@@ -102,8 +107,7 @@ $result_products = $conn->query($sql_products);
             </div>
             <button type="submit" class="btn btn-primary" name="add_user">Agregar Usuario</button>
         </form>
-
-        <!-- Agregar Producto -->
+        
         <h2>Agregar Producto</h2>
         <form method="post" action="">
             <div class="form-group">
@@ -117,7 +121,6 @@ $result_products = $conn->query($sql_products);
             <button type="submit" class="btn btn-primary" name="add_product">Agregar Producto</button>
         </form>
 
-        <!-- Listar Usuarios -->
         <h2>Usuarios</h2>
         <table class="table">
             <thead>
@@ -140,6 +143,7 @@ $result_products = $conn->query($sql_products);
                                 <form method='post' action=''>
                                     <input type='hidden' name='user_id' value='" . $row['id'] . "'>
                                     <button type='submit' class='btn btn-danger' name='delete_user'>Eliminar</button>
+                                    <button type='submit' class='btn btn-primary' name='update_user'>Modificar</button>
                                 </form>
                               </td>";
                         echo "</tr>";
@@ -151,7 +155,6 @@ $result_products = $conn->query($sql_products);
             </tbody>
         </table>
 
-        <!-- Listar Productos -->
         <h2>Productos</h2>
         <table class="table">
             <thead>
@@ -174,6 +177,7 @@ $result_products = $conn->query($sql_products);
                                 <form method='post' action=''>
                                     <input type='hidden' name='product_id' value='" . $row['id'] . "'>
                                     <button type='submit' class='btn btn-danger' name='delete_product'>Eliminar</button>
+                                    <button type='submit' class='btn btn-primary' name='update_product'>Modificar</button>
                                 </form>
                               </td>";
                         echo "</tr>";
@@ -189,6 +193,6 @@ $result_products = $conn->query($sql_products);
 </html>
 
 <?php
-// Cerrar la conexión a la base de datos
 $conn->close();
 ?>
+
